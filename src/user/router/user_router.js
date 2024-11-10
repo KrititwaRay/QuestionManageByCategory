@@ -21,4 +21,12 @@ middleware = [
 ]
 router.route('/signup').post(middleware, userController.signUp);
 
+
+middleware = [
+
+    // userMiddleware.signupValidation(),
+    commonMiddleware.checkForErrors
+]
+router.route('/login').post(middleware, userController.logIn)
+
 export const user_router = router;

@@ -25,7 +25,8 @@ export class UserModel {
         },{
             timestamps: true,
             versionKey: false,
-            collection: 'Users'
+            collection: 'Users',
+        //    select: '-password'
         })
 
         schema.pre('save', async function (next) {
@@ -33,6 +34,11 @@ export class UserModel {
             this.password = await bcrypt.hash(this.password, 10);
             next();
         })
+
+        schema.methods.generateAccessToken = async function(){
+            const secret = process.env.ACCESS_TOKEN_SECRET || 'jbfakj%NCasA#cjcn';
+            return jwt.sign({ _id: this._id, email: this.email }, secret ,{ expiresIn: process.env.ACCESS_TOKEN_EXPIRY || '1d' })
+        }
 
      this.User = mongoose.model('User', schema)
     }
