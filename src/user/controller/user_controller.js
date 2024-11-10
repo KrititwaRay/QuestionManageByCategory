@@ -1,6 +1,6 @@
 import { UserModel } from "../model/user_model.js";
 import bcrypt from 'bcrypt';
-
+import mongoose from "mongoose";
 
 export class UserController {
     constructor() {
@@ -86,6 +86,40 @@ export class UserController {
             return accessToken
         } catch (error) {
             throw new Error("An error occurred while generating tokens.");
+        }
+    }
+
+
+    viewUserProfile = async (req, res) => {
+        try {
+           
+            let user = await this._userModel.User.aggregate([
+                { 
+                    $match: {
+                        _id: new mongoose.Types.ObjectId(req.body.id)
+                    }
+                },
+                {
+                    $project: {
+                        password: 0,
+                        createdAt: 0,
+                        updatedAt: 0,
+                        __v: 0
+                    }
+                }
+            ])
+
+            return res.status(200).json({ status: true, data: {
+                id : user[0]._id,
+                username : user[0].username,
+                email : user[0].email,
+                profilePicture : user[0].profilePicture
+            },
+            message: "User profile fetched successfully."
+         })
+
+        } catch (error) {
+            return res.status(500).json({ status: false, message: error.message })
         }
     }
 

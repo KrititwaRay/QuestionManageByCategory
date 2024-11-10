@@ -27,6 +27,15 @@ middleware = [
     // userMiddleware.signupValidation(),
     commonMiddleware.checkForErrors
 ]
-router.route('/login').post(middleware, userController.logIn)
+router.route('/login').post(middleware, userController.logIn);
+
+
+middleware = [
+
+    // userMiddleware.signupValidation(),
+    commonMiddleware.checkForErrors
+]
+router.route('/view-profile').post(middleware, userController.viewUserProfile)
+
 
 export const user_router = router;
